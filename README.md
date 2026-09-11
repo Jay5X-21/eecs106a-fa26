@@ -8,7 +8,7 @@ This public repository contains the starter code and public checks for EECS C106
 | --- | --- | --- |
 | HW0: Python Bootcamp | [HW0 README](hw0/README.md) | `hw0/HW0.ipynb` |
 | HW1: Vehicle Coordinate Transformations | Assignment handout and [starter docstring](hw1/hw1.py) | `hw1/hw1.py` |
-| HW2: Exponential Coordinates | Assignment handout and [HW2 README](hw2/README.md) | `hw2/hw2.py` and `hw2/kin_func_skeleton.py` |
+| HW2: Exponential Coordinates | Assignment handout and starter docstrings | `hw2/hw2.py` and `hw2/kin_func_skeleton.py` |
 
 The assignment handout provides the full problem statement and any additional submission requirements.
 
