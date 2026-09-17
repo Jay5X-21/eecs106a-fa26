@@ -117,7 +117,15 @@ def R3_to_so3(omega):
     """
 
     # YOUR CODE HERE
+    omega_hat = np.array([
+                        [0,         -omega[2],  omega[1]],
+                        [omega[2],   0,        -omega[0]],
+                        [-omega[1],  omega[0],  0]
+                        ])
 
+    return omega_hat
+
+    # omega[0] = ωx, omega[1] = ωy, omega[2] = ωz
 
 def so3_to_R3(omega_hat):
     """
@@ -134,6 +142,13 @@ def so3_to_R3(omega_hat):
     assert np.allclose(omega_hat, -omega_hat.T)
 
     # YOUR CODE HERE
+    omega = np.array([
+                    omega_hat[2, 1],
+                    omega_hat[0, 2],
+                    omega_hat[1, 0]
+                    ])
+
+    return omega
 
 
 def axis_angle_to_SO3(omega, theta):
@@ -152,6 +167,22 @@ def axis_angle_to_SO3(omega, theta):
     """
 
     # YOUR CODE HERE
+    omega_norm = spl.norm(omega)
+
+    if omega_norm < 1e-10:
+        return np.eye(3)
+
+    omega_unit = omega / omega_norm
+    omega_hat = R3_to_so3(omega_unit)
+    angle = omega_norm * theta
+
+    rot = (
+        np.eye(3)
+        + omega_hat * np.sin(angle)
+        + np.matmul(omega_hat, omega_hat) * (1 - np.cos(angle))
+    )
+
+    return rot
 
 
 def so3_to_SO3(omega_hat, theta=1):
@@ -170,6 +201,9 @@ def so3_to_SO3(omega_hat, theta=1):
     """
 
     # YOUR CODE HERE
+    omega = so3_to_R3(omega_hat)
+    rot = axis_angle_to_SO3(omega, theta)
+    return rot
 
 
 def twist_to_se3(xi, theta=1):
@@ -187,6 +221,14 @@ def twist_to_se3(xi, theta=1):
     """
 
     # YOUR CODE HERE
+    v = xi[:3] * theta
+    omega = xi[3:] * theta
+
+    xi_hat = np.zeros((4, 4))
+    xi_hat[:3, :3] = R3_to_so3(omega)
+    xi_hat[:3, 3] = v
+
+    return xi_hat
 
 
 
@@ -202,6 +244,11 @@ def se3_to_twist(xi_hat):
     """
 
     # YOUR CODE HERE
+    v = xi_hat[:3, 3]
+    omega = so3_to_R3(xi_hat[:3, :3])
+
+    xi = np.concatenate((v, omega))
+    return xi
 
 
 def twist_to_SE3(xi, theta=1):
@@ -220,6 +267,26 @@ def twist_to_SE3(xi, theta=1):
     """
 
     # YOUR CODE HERE
+    v = xi[:3]
+    omega = xi[3:]
+
+    g = np.eye(4)
+    omega_norm = spl.norm(omega)
+
+    if omega_norm < 1e-10:
+        g[:3, 3] = v * theta
+        return g
+
+    omega_hat = R3_to_so3(omega)
+    R = axis_angle_to_SO3(omega, theta)
+
+    p = (np.matmul(np.eye(3) - R, np.matmul(omega_hat, v))
+        + omega * np.dot(omega, v) * theta) / (omega_norm ** 2)
+
+    g[:3, :3] = R
+    g[:3, 3] = p
+
+    return g
 
 
 def se3_to_SE3(xi_hat, theta=1):
@@ -238,6 +305,9 @@ def se3_to_SE3(xi_hat, theta=1):
     """
 
     # YOUR CODE HERE
+    xi = se3_to_twist(xi_hat)
+    g = twist_to_SE3(xi, theta)
+    return g
 
 
 def forward_kinematics(xi, theta):
@@ -254,6 +324,12 @@ def forward_kinematics(xi, theta):
     """
 
     # YOUR CODE HERE
+    g = np.eye(4)
+
+    for i in range(xi.shape[1]):
+        g = np.matmul(g, twist_to_SE3(xi[:, i], theta[i]))
+
+    return g
 
 
 # ------------------------- Other Helper Functions -----------------------------
