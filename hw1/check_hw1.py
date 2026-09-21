@@ -120,7 +120,10 @@ def load_submission(path: Path):
         raise ImportError(f"could not load {path}")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    return getattr(module, "get_corners", None)
+    function = getattr(module, "get_corners", None)
+    if not callable(function):
+        raise AttributeError("hw1.py must define a callable get_corners")
+    return function
 
 
 def main() -> int:
