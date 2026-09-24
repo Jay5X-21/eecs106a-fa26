@@ -88,7 +88,7 @@ def fk_1(theta):
     # Use product of exponentials formula to compute forward kinematics.
     # Make a call to forward_kinematics from kin_func_skeleton and remember to
     # incorporate gst0
-    g = None
+    g = np.matmul(forward_kinematics(xi_array, theta), gst0)
 
     # Return the required quantities.
     return g, xi_array
@@ -109,6 +109,21 @@ def fk_2(theta):
           stacked in its columns. This is used by the autograder to assign
           partial credit.
     """
+
+    """
+    Now we have a screw joint.
+
+    The assignment specifies
+
+    L_1=10, L_2=L_3=5, L_4=3, h=2
+
+    Joint 1 is a screw joint; joints 2 and 3 are revolute.
+
+    The new formula is
+    v = -omega * q + h*omega
+
+    For an ordinary revolute joint h=0
+    """
     # Specify all twists.
     xi_1 = [0, 0, 0, 0, 0, 0]
     xi_2 = [0, 0, 0, 0, 0, 0]
@@ -126,7 +141,7 @@ def fk_2(theta):
     # Use product of exponentials formula to compute forward kinematics.
     # Make a call to forward_kinematics from kin_func_skeleton and remember to
     # incorporate gst0
-    g = None
+    g = np.matmul(forward_kinematics(xi_array, theta), gst0)
 
     # Return the required quantities.
     return g, xi_array
@@ -167,7 +182,19 @@ def fk_3(theta):
     # Use product of exponentials formula to compute forward kinematics.
     # Make a call to forward_kinematics from kin_func_skeleton and remember to
     # incorporate gst0
-    g = None
+    g = np.matmul(forward_kinematics(xi_array, theta), gst0)
 
     # Return the required quantities.
     return g, xi_array
+
+
+
+"""
+all follow exactly the same pattern:
+
+twists → ξ_array → forward_kinematics → multiply g(0)
+
+
+because your HW2 forward_kinematics() starts with I and successively right-multiplies each twist_to_SE3(...).
+
+"""
