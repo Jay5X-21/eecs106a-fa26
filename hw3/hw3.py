@@ -72,9 +72,9 @@ def fk_1(theta):
           partial credit.
     """
     # Specify all twists.
-    xi_1 = [0, 0, 0, 0, 0, 0]
-    xi_2 = [0, 0, 0, 0, 0, 0]
-    xi_3 = [0, 0, 0, 0, 0, 0]
+    xi_1 = [0, 0, 0, 0, 0, 1]
+    xi_2 = [0, 0, 0, 0, 1, 0]
+    xi_3 = [0, 0, 0, 1, 0, 0]
 
     # Specify end effector configuration at theta = 0.
     gst0 = np.array([[1, 0, 0, 0],
@@ -125,9 +125,9 @@ def fk_2(theta):
     For an ordinary revolute joint h=0
     """
     # Specify all twists.
-    xi_1 = [0, 0, 0, 0, 0, 0]
-    xi_2 = [0, 0, 0, 0, 0, 0]
-    xi_3 = [0, 0, 0, 0, 0, 0]
+    xi_1 = [0, 0, 2, 0, 0, 1]
+    xi_2 = [-10, 0, 0, 0, 1, 0]
+    xi_3 = [-5, 0, 5, 0, 1, 0]
 
     # Specify end effector configuration at theta = 0.
     gst0 = np.array([[1, 0, 0, 0],
@@ -163,12 +163,12 @@ def fk_3(theta):
           partial credit.
     """
     # Specify all twists.
-    xi_1 = [0, 0, 0, 0, 0, 0]
-    xi_2 = [0, 0, 0, 0, 0, 0]
-    xi_3 = [0, 0, 0, 0, 0, 0]
-    xi_4 = [0, 0, 0, 0, 0, 0]
-    xi_5 = [0, 0, 0, 0, 0, 0]
-    xi_6 = [0, 0, 0, 0, 0, 0]
+    xi_1 = [0, 0, 0, 0, 0, 1]
+    xi_2 = [0, -1, 0, -1, 0, 0]
+    xi_3 = [0, 1, 0, 0, 0, 0]
+    xi_4 = [1, 0, 0, 0, 0, 1]
+    xi_5 = [0, -1, 1, -1, 0, 0]
+    xi_6 = [-1, 0, 0, 0, 1, 0]
 
     # Specify end effector configuration at theta = 0.
     gst0 = np.array([[1, 0, 0, 0],
