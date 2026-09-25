@@ -77,9 +77,9 @@ def fk_1(theta):
     xi_3 = [0, 0, 0, 1, 0, 0]
 
     # Specify end effector configuration at theta = 0.
-    gst0 = np.array([[1, 0, 0, 0],
+    gst0 = np.array([[0, 0, 1, 1],
+                     [1, 0, 0, 0],
                      [0, 1, 0, 0],
-                     [0, 0, 1, 0],
                      [0, 0, 0, 1]], dtype=np.float64)
 
     # Stack twists into an array that forward_kinematics can accept.
@@ -127,14 +127,13 @@ def fk_2(theta):
     # Specify all twists.
     xi_1 = [0, 0, 2, 0, 0, 1]
     xi_2 = [-10, 0, 0, 0, 1, 0]
-    xi_3 = [-5, 0, 5, 0, 1, 0]
+    xi_3 = [-5, 0, 0, 0, 1, 0]
 
     # Specify end effector configuration at theta = 0.
-    gst0 = np.array([[1, 0, 0, 0],
-                     [0, 1, 0, 0],
-                     [0, 0, 1, 0],
-                     [0, 0, 0, 1]], dtype=np.float64)
-
+    gst0 = np.array([[0, -1, 0, 0],
+                     [1,  0, 0, 3],
+                     [0,  0, 1, 5],
+                     [0,  0, 0, 1]], dtype=np.float64)
     # Stack twists into an array that forward_kinematics can accept.
     xi_array = np.array([xi_1, xi_2, xi_3], dtype=np.float64).T
 
@@ -171,9 +170,9 @@ def fk_3(theta):
     xi_6 = [-1, 0, 0, 0, 1, 0]
 
     # Specify end effector configuration at theta = 0.
-    gst0 = np.array([[1, 0, 0, 0],
-                     [0, 1, 0, 0],
-                     [0, 0, 1, 0],
+    gst0 = np.array([[0, 1, 0, 0],
+                     [0, 0, 1, 1],
+                     [1, 0, 0, 1],
                      [0, 0, 0, 1]], dtype=np.float64)
 
     # Stack twists into an array that forward_kinematics can accept.
