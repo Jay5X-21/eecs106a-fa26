@@ -62,7 +62,14 @@ def null_space_ik_step(
     """
 
     # TODO
-    return ...
+    J = spatial_jacobian(PANDA_TWISTS, theta)
+    J_pinv = np.linalg.pinv(J)
+
+    primary = J_pinv @ velocity
+    projection = np.eye(7) - J_pinv @ J
+    secondary = projection @ secondary_gradient
+
+    return theta + step_size * (primary + secondary_gain * secondary)
 
 
 def joint_limit_gradient(theta):
@@ -78,4 +85,7 @@ def joint_limit_gradient(theta):
     """
 
     # TODO
-    return ...
+    center = (PANDA_THETA_MIN + PANDA_THETA_MAX) / 2
+    radius = (PANDA_THETA_MAX - PANDA_THETA_MIN) / 2
+
+    return -(theta - center) / (radius ** 2)

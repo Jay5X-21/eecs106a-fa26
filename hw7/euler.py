@@ -26,7 +26,15 @@ def euler_jacobian(theta):
         spatial angular velocity.
     """
     # TODO
-    return ...
+    twists = np.zeros((6, 3))
+
+    twists[3:, 0] = [0, 0, 1]
+    twists[3:, 1] = [0, 1, 0]
+    twists[3:, 2] = [1, 0, 0]
+
+    J = spatial_jacobian(twists, theta)
+
+    return J[3:, :]
 
 
 def manipulability(jacobian):
@@ -40,7 +48,9 @@ def manipulability(jacobian):
         Jacobian has zero manipulability. ``np.linalg.svd`` may be useful.
     """
     # TODO
-    return ...
+    singular_values = np.linalg.svd(jacobian, compute_uv=False)
+
+    return np.prod(singular_values)
 
 
 def main():

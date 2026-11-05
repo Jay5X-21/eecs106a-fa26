@@ -24,7 +24,15 @@ def adjoint(g):
     """
 
     # TODO
-    return ...
+    R = g[:3, :3]
+    p = g[:3, 3]
+
+    Ad = np.zeros((6, 6))
+    Ad[:3, :3] = R
+    Ad[:3, 3:] = R3_to_so3(p) @ R
+    Ad[3:, 3:] = R
+
+    return Ad
 
 
 def adjoint_inv(g):
@@ -39,7 +47,15 @@ def adjoint_inv(g):
     """
 
     # TODO
-    return ...
+    R = g[:3, :3]
+    p = g[:3, 3]
+
+    Ad = np.zeros((6, 6))
+    Ad[:3, :3] = R.T
+    Ad[:3, 3:] = -R.T @ R3_to_so3(p)
+    Ad[3:, 3:] = R.T
+
+    return Ad
 
 
 def spatial_jacobian(twists, theta):
@@ -56,7 +72,15 @@ def spatial_jacobian(twists, theta):
     """
 
     # TODO
-    return ...
+    n = len(theta)
+    J = np.zeros((6, n))
+    g = np.eye(4)
+
+    for i in range(n):
+        J[:, i] = adjoint(g) @ twists[:, i]
+        g = g @ twist_to_SE3(twists[:, i], theta[i])
+
+    return J
 
 
 def body_jacobian(twists, theta, g_st0):
@@ -75,7 +99,15 @@ def body_jacobian(twists, theta, g_st0):
     """
 
     # TODO
-    return ...
+    J_s = spatial_jacobian(twists, theta)
+
+    g = np.eye(4)
+    for i in range(len(theta)):
+        g = g @ twist_to_SE3(twists[:, i], theta[i])
+
+    g = g @ g_st0
+
+    return adjoint_inv(g) @ J_s
 
 
 def spatial_velocity(twists, theta, theta_dot):
@@ -93,7 +125,9 @@ def spatial_velocity(twists, theta, theta_dot):
     """
 
     # TODO
-    return ...
+    J_s = spatial_jacobian(twists, theta)
+
+    return J_s @ theta_dot
 
 
 def body_velocity(twists, theta, theta_dot, g_st0):
@@ -113,7 +147,9 @@ def body_velocity(twists, theta, theta_dot, g_st0):
     """
 
     # TODO
-    return ...
+    J_b = body_jacobian(twists, theta, g_st0)
+
+    return J_b @ theta_dot
 
 
 def spatial_configuration_error(pose, desired_pose):
@@ -129,7 +165,7 @@ def spatial_configuration_error(pose, desired_pose):
     """
 
     # TODO
-    return ...
+    return desired_pose @ inverse_SE3(pose)
 
 
 def spatial_error_twist(error):
@@ -146,7 +182,9 @@ def spatial_error_twist(error):
     """
 
     # TODO
-    return ...
+    error_hat = np.real(logm(error))
+
+    return se3_to_twist(error_hat)
 
 
 def jacobian_inverse_kinematics(
@@ -176,4 +214,26 @@ def jacobian_inverse_kinematics(
     """
 
     # TODO
-    return ...
+    current_theta = np.array(theta, dtype=float, copy=True)
+    history = [current_theta.copy()]
+
+    for i in range(max_iterations):
+        g = np.eye(4)
+
+        for j in range(len(current_theta)):
+            g = g @ twist_to_SE3(twists[:, j], current_theta[j])
+
+        g = g @ g_st0
+
+        error = spatial_configuration_error(g, desired_pose)
+        xi_error = spatial_error_twist(error)
+
+        if np.linalg.norm(xi_error) <= tolerance:
+            break
+
+        J = spatial_jacobian(twists, current_theta)
+        current_theta = current_theta + step_size * (np.linalg.pinv(J) @ xi_error)
+
+        history.append(current_theta.copy())
+
+    return current_theta, np.array(history)
