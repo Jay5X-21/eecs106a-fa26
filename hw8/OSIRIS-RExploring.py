@@ -15,12 +15,12 @@ def main():
     omega = sp.symbols("omega", real=True, nonzero=True)
 
     # TODO: enter A (4, 4) and B (4, 2) from part (a), using sp.Matrix.
-    A = ...
-    B = ...
+    A = sp.Matrix([[0, 0, 1, 0], [0, 0, 0, 1], [3 * omega**2, 0, 0, 2 * p * omega], [0, 0, -2 * omega / p, 0]])
+    B = sp.Matrix([[0, 0], [0, 0], [1, 0], [0, 1 / p]])
 
     # (b) Each eigenvalue is paired with its algebraic multiplicity.
     print("Eigenvalues and algebraic multiplicities:")
-    sp.pprint()
+    sp.pprint(A.eigenvals())
 
     # Each entry contains an eigenvalue, multiplicity, and eigenvector basis.
     print("Eigenvalues, algebraic multiplicities, and eigenvector bases:")
@@ -28,7 +28,7 @@ def main():
 
     # (c) TODO: construct C = [B, AB, A**2 B, A**3 B], with shape (4, 8).
     # sp.Matrix.hstack joins matrices horizontally; * multiplies SymPy matrices.
-    C = ...
+    C = sp.Matrix.hstack(B, A * B, A**2 * B, A**3 * B)
 
     print("Controllability matrix:")
     sp.pprint(C)
